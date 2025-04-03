@@ -1,2 +1,12 @@
-.env
-.venv
+# Excludes environment variables containing secrets  
+.env  
+
+# Ignores Python virtual environment  
+venv/  
+
+# PyInstaller output directories  
+build/  
+dist/  
+
+# PyInstaller generated spec file  
+main.spec  
