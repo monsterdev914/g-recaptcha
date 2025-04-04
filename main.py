@@ -23,10 +23,10 @@ website_url = os.getenv("WEBSITE_URL")
 website_key = os.getenv("WEBSITE_KEY")  
 username = os.getenv("USER_NAME")  
 password = os.getenv('PASSWORD')  
-proxy = random.choice(proxy_list)  
+proxy = random.choice(proxy_list)
+
 proxies = {  
-    "http": proxy,  
-    "https": proxy,  
+    "http": 'http://user-john123_F6xyN:Pwd123@pr.u26x17fh.lunaproxy.net:32233',  
 }  
 
 def login(api_key, website_url, website_key, username, password, proxies):  
@@ -94,11 +94,11 @@ def reCaptcha(api_key, website_url, website_key, username, password, proxies, pe
     # Check if 'Vistos_sid' exists and is empty  
     while "Vistos_sid" not in cookies or cookies["Vistos_sid"] == '':  
         print("Vistos_sid not found or is empty. Logging out...")
-        proxy = random.choice(proxy_list)  
-        proxies = {  
-            "http": proxy,  
-            "https": proxy,  
-        }    
+        # proxy = random.choice(proxy_list)  
+        # proxies = {  
+        #     "http": proxy,  
+        #     "https": proxy,  
+        # }    
         # Attempt to log out
         cookies = login(api_key, website_url, website_key, username, password, proxies)
         # cookies["Vistos_sid"] = 'owaT3sqcST/drWiESvK7nVL74bgA/+BzhScSKWJs+8VP0Tp3pdiuL8tUrpaI6doA8dppTyZYJhImOnLS0tBbbLDW5pUU2gvGU1vbdU2iLieTNQoRqPxmVN8OQkiC2j0U'  
