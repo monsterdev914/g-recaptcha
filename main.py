@@ -24,7 +24,7 @@ proxy = random.choice(proxy_list)
 # http://user-abcde_N0ieA:Pwd123@pr.j5vjhbtp.lunaproxy.net:32233
 # Configure proxies  
 proxies = {  
-    "http": 'user-abcde_N0ieA:Pwd123@pr.j5vjhbtp.lunaproxy.net:32233',  
+    "http": 'user-john123_F6xyN:Pwd123@pr.u26x17fh.lunaproxy.net:32233',  
 }  
 
 # Consolidated headers  
@@ -58,7 +58,7 @@ def login(api_key, website_url, website_key, username, password, proxies):
         if 'gRecaptchaResponse' not in solution:  
             print("CAPTCHA solution failed")  
             return None  
-
+        print('reCapture passed')
         # Authentication payload  
         payload = {  
             "username": username,  
@@ -72,7 +72,7 @@ def login(api_key, website_url, website_key, username, password, proxies):
 
         login_res = session.post(  
             "https://pedidodevistos.mne.gov.pt/$J@5Yg0RAhCxKgAhgfwtTouVMlnWPHDd_ubZzU6uSScB8ZmN3SlXxLKGpc",  
-            data=payload,   
+            data=payload,
         )
         
         if login_res.status_code == 200:
@@ -131,7 +131,7 @@ def reCaptcha(api_key, website_url, website_key, username, password, proxies, pe
             print(f"Form1 error: {res1.status_code}")  
             return  
 
-        # Extract CSRF token 🛠️ Critical fix 
+        # Extract CSRF token 🛠️ Critical fix
         soup = BeautifulSoup(res1.text, 'html.parser')
         token_input = soup.find('input', attrs={'name': '__RequestVerificationToken'})  
         if not token_input:  
@@ -207,9 +207,10 @@ def reCaptcha(api_key, website_url, website_key, username, password, proxies, pe
                 'f_date_c': '',  
                 'cmbPeriodo': ''  
             }
-        cookies = res1.cookies.get_dict()
-        session.cookies.update(cookies) 
-        
+        # cookies = res1.cookies.get_dict()
+        # session.cookies.update(cookies) 
+        with open('form1.html', 'w') as file:
+            file.write(res1.text) 
         res2 = session.post(  
             "https://pedidodevistos.mne.gov.pt/VistosOnline/ScheduleController",  
             data=form_data2
