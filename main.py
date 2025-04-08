@@ -207,10 +207,10 @@ def reCaptcha(api_key, website_url, website_key, username, password, proxies, pe
                 'f_date_c': '',  
                 'cmbPeriodo': ''  
             }
-        # cookies = res1.cookies.get_dict()
-        # session.cookies.update(cookies) 
-        with open('form1.html', 'w') as file:
-            file.write(res1.text) 
+        cookies = res1.cookies.get_dict()
+        session.cookies.update(cookies) 
+        # with open('form1.html', 'w', encoding="utf-8") as file:
+        #     file.write(res1.text) 
         res2 = session.post(  
             "https://pedidodevistos.mne.gov.pt/VistosOnline/ScheduleController",  
             data=form_data2
@@ -236,8 +236,10 @@ def reCaptcha(api_key, website_url, website_key, username, password, proxies, pe
             
             if final_res.status_code == 200:  
                 print("Booking successful!")  
-            else:  
-                print(f"Final submission failed: {final_res.status_code}")  
+            else:
+                print(f"Final submission failed: {final_res.status_code}") 
+        else:
+            print(f'Form2: Error {res2.status_code}') 
 
     except Exception as e:  
         print(f"Workflow error: {str(e)}")  
