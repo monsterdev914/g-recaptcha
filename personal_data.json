@@ -7,13 +7,13 @@
         "local_nascimento": "Santiago, Cabo Verde",
         "passaporte": "PA344114",
         "validade_passaporte": {
-            "inicio": "2024-04-15",
-            "fim": "2029-04-14"
+            "inicio": "2024/04/15",
+            "fim": "2029/04/14"
         },
         "motivo": "Ferias",
         "data_viagem": {
-            "partida": "2025-05-17",
-            "retorno": "2025-06-04"
+            "partida": "2025/05/17",
+            "retorno": "2025/06/06"
         },
         "patrocinador": "Carlos Antonio Correia Morais Chantre",
         "endereco_patrocinador": "Rua Bombeiros Voluntários 3A, 2670-999 Loures, Portugal"
@@ -26,13 +26,13 @@
         "local_nascimento": "Santiago, Cabo Verde",
         "passaporte": "PA344114",
         "validade_passaporte": {
-            "inicio": "2024-04-15",
-            "fim": "2029-04-14"
+            "inicio": "2024/04/15",
+            "fim": "2029/04/14"
         },
         "motivo": "Ferias",
         "data_viagem": {
-            "partida": "2025-05-17",
-            "retorno": "2025-06-04"
+            "partida": "2025/05/17",
+            "retorno": "2025/06/04"
         },
         "patrocinador": "Carlos Antonio Correia Morais Chantre",
         "endereco_patrocinador": "Rua Bombeiros Voluntários 3A, 2670-999 Loures, Portugal"

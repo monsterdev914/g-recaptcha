@@ -1,26 +1,11 @@
 [
     {
         "username": "cr732",
-        "created": "2025-04-13 03:20:10",
+        "created": "2025-05-10 13:22:03",
         "cookie": {
-            "Vistos_sid": "DHSQsJfqTrp0OcHBqyH6UwpW9EvX8JN0SCck4N84w1rqk/zJENnEA8UAnyUMsd3YtufzbmWg3j77LpKfKfomOGJUzBrDLyvdVHW3FGCeLELe0Ug0kze82t16GLoRXXZ+",
-            "cookiesession1": "678B2870E7ADE5115575A9A93AF199B5"
+            "Vistos_sid": "IkByO1y1mSksjq4HHc0Agfi8Q9+k7Bx4TYLOSv/fA6XEQLF5INoz7Dr6W/kkyOts9uDweLxjxIw1FarbcsNaedP+VfWDg+d51nn2UFDBNLmoZP1SMvybxzzlKk6mz79m",
+            "cookiesession1": "678B2870AD64FB19BC86364361903B92"
         },
-        "proxy": {
-            "http": "http://noah2024-GM-8:Saulo2020@p.webshare.io:80",
-            "https": "http://noah2024-GM-8:Saulo2020@p.webshare.io:80"
-        }
-    },
-    {
-        "username": "cr731",
-        "created": "2025-04-13 03:34:48",
-        "cookie": {
-            "Vistos_sid": "KITkb5K1oQdbkNn8dSgImYHr1BtvUrMDJWxPFFAM/D0rwjg0gsB67CUKpVkCcwSI8CcKbp7ejqcCKyiedSR6VNYJsYY/pO0hW1w1DLQfWk1ty8fxdA+kpEh/9Q/OwUXGGxo=",
-            "cookiesession1": "678B287008540AA2DAB62FCDFD410572"
-        },
-        "proxy": {
-            "http": "http://noah2024-GM-5:Saulo2020@p.webshare.io:80",
-            "https": "http://noah2024-GM-5:Saulo2020@p.webshare.io:80"
-        }
+        "proxy": "http://saulo2020-res-jp-sid-67923415:iakzt2F55N6Y1VS@gw.netnut.net:5959"
     }
 ]

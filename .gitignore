@@ -7,6 +7,14 @@ venv/
 # PyInstaller output directories  
 build/  
 dist/  
+cookies.json
+personal_data.json
+proxy_list.json
+credentials.txt
+form1.html
+form2.html
+form3.html
+pdf.html
 
 # PyInstaller generated spec file  
 main.spec  
