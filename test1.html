@@ -1,0 +1,43 @@
+
+
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+   
+   
+   
+   
+   
+<html>
+    <head>
+    	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Vistos Online</title>
+        <link rel="stylesheet" media="all" href="Styles/vistosOnline.css" >
+        <script type="text/javascript">
+
+           	function voltar(lang) {
+        	   	//alert(lang);
+        	    document.getElementById('lang').value = lang;
+				document.getElementById('frmVoltar').action = "/VistosOnline/?lang="+lang;
+				document.getElementById('frmVoltar').submit();
+           	}
+                      
+        </script>
+    </head>
+    <body topmargin="100">
+    	<form action="" id="frmVoltar" method="post">
+            <input type="hidden" value="" id=lang name="lang">
+        </form>
+        <div style="width:100%" align="center">
+        <table> 
+            <tr style="height: 50px;"><td class="titulo_pagina_erro">Perdeu a sessão. Volte para a <a href="/VistosOnline/Authentication.jsp?lang=PT">página inicial</a>.</td></tr>
+            <tr style="height: 50px;"><td class="titulo_pagina_erro">Session lost. Go to <a href="/VistosOnline/Authentication.jsp?lang=ENG">initial page</a>.</td></tr>
+            <tr style="height: 50px;"><td class="titulo_pagina_erro">Session perdue. Allez à la <a href="/VistosOnline/Authentication.jsp?lang=FR">page initiale</a>.</td></tr>
+            <tr style="height: 50px;"><td class="titulo_pagina_erro">Сесія втрачена. Перейдіть на <a href="/VistosOnline/Authentication.jsp?lang=UA">початкову сторінку</a>.</td></tr>
+            <tr style="height: 50px;"><td class="titulo_pagina_erro">Сессия потеряна. Перейти на <a href="/VistosOnline/Authentication.jsp?lang=RUS">начальную страницу</a>.</td></tr>
+        </table>
+        </div>
+    </body>
+</html>
