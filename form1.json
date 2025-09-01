@@ -1,17 +1,17 @@
 {
     "lang": "PT",
     "nacionalidade": "CPV",
-    "pais_residencia": "CPV",
+    "pais_residencia": "BRA",
     "tipo_passaporte": "01",
     "copia_pedido": "null",
-    "cb_pais_residencia": "CPV",
+    "cb_pais_residencia": "BRA",
     "cb_next_1": "21",
     "cb_tipo_passaporte": "01",
     "cb_qt_dias": "SCH",
     "cb_trab_sazonal": "S",
-    "tipo_visto": "C",
-    "tipo_visto_desc": "SHORT STAY VISA (SCHENGEN)",
+    "tipo_visto": "CT",
+    "tipo_visto_desc": "SEASONAL WORK VISA",
     "class_visto": "SCH",
-    "cod_estada": "10",
-    "id_visto_doc": "36"
+    "cod_estada": "01",
+    "id_visto_doc": "2"
 }

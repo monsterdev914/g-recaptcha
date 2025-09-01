@@ -34,12 +34,6 @@ class Config:
         with open('cookies.json', 'r', encoding='utf-8') as f:
             self.logined_cookies = json.load(f)
 
-        self.headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-
-        }
-
 
 class CookieManager:
     """Handles cookie operations"""
@@ -96,7 +90,6 @@ class VisaApplication:
         self.config = config
         self.cookie_manager = CookieManager(config)
         self.session = requests.Session()
-        self.session.headers.update(config.headers)
 
         # Load form data from JSON files
         with open('form1.json', 'r', encoding='utf-8') as f:
@@ -104,35 +97,126 @@ class VisaApplication:
         # with open('form2.json', 'r', encoding='utf-8') as f:
         #     self.form_data2 = json.load(f)
 
-        # Check for stored cookies first
-        stored_cookies = self.cookie_manager.get_cookies(self.config.username)
-        if stored_cookies:
-            stored_data = stored_cookies
-            self.session.cookies.update(stored_data['cookie'])
-            self.proxy = stored_data['proxy']
-        else:
-            self.proxy = random.choice(config.proxy_list)
+        self.proxy = random.choice(config.proxy_list)
+
+        # Convert proxy format for proper usage
+        self.formatted_proxy = self._format_proxy(self.proxy)
+        print(f'Formatted proxy: {self.formatted_proxy}')
 
         self.session.proxies.update({
-            "http": self.proxy,
-            'https': self.proxy
+            "http": self.formatted_proxy,
+            'https': self.formatted_proxy
         })
+        self.session.headers.update({
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+            "Accept-Language": "en-US,en;q=0.9",
+            # Add Fetch Metadata headers for better stealth
+            "Sec-Fetch-Dest": "document",
+            "Sec-Fetch-Mode": "navigate",
+            "Sec-Fetch-Site": "none",
+            "Sec-Fetch-User": "?1",
+            "sec-ch-ua": '"Not;A=Brand";v="99", "Google Chrome";v="139", "Chromium";v="139"',
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": '"Windows"',
+            "Upgrade-Insecure-Requests": "1",
+            "Origin": "https://pedidodevistos.mne.gov.pt",
+            "Connection": "keep-alive",
+            "Cache-Control": "max-age=0",
+        })
+        
+        # Perform pre-authentication request (from 1.html analysis)
+        self._perform_pre_authentication()
+
+    def _perform_pre_authentication(self):
+        """Perform the pre-authentication request based on the JavaScript analysis"""
+        import base64
+        from urllib.parse import quote
+        
+        print("Performing pre-authentication request...")
+        
+        # Values from the obfuscated JavaScript
+        encoded_value = "RUNCQ0JENjI3QzcyQjg2NUFCRDhERUVERDUwMUMzQUY="
+        
+        try:
+            decoded_value = base64.b64decode(encoded_value).decode('utf-8')
+        except:
+            decoded_value = encoded_value
+        
+        # Build URL with parameters
+        base_url = "https://pedidodevistos.mne.gov.pt/VistosOnline/Authentication.jsp"
+        param_name = "TABBIGBVMTEQTEDP"
+        url = f"{base_url}?{param_name}={quote(decoded_value)}"
+        
+        # POST data
+        post_data = {"cookiesession8341": "UOMQHHKGHSVVWRLU"}
+        
+        # Additional headers for this specific request
+        auth_headers = {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept-Language": "ja",
+            "Referer": "https://pedidodevistos.mne.gov.pt/VistosOnline/"
+        }
+        
+        try:
+            response = self.session.post(url, data=post_data, headers=auth_headers)
+            print(f"Pre-authentication status: {response.status_code}")
+            
+            if response.status_code == 200:
+                print("Pre-authentication successful")
+                # Update session cookies
+                self.session.cookies.update(response.cookies)
+                return True
+            else:
+                print(f"Pre-authentication failed with status: {response.status_code}")
+                return False
+                
+        except Exception as e:
+            print(f"Pre-authentication error: {e}")
+            return False
+
+    def _format_proxy(self, proxy_url: str) -> str:
+        """Convert proxy format from http://username:password:ip:port to http://username:password@ip:port"""
+        try:
+            # Remove http:// prefix
+            if proxy_url.startswith('http://'):
+                proxy_content = proxy_url[7:]
+            else:
+                proxy_content = proxy_url
+            
+            # Split the proxy content
+            parts = proxy_content.split(':')
+            if len(parts) == 4:
+                username, password, ip, port = parts
+                return f"http://{username}:{password}@{ip}:{port}"
+            else:
+                print(f"Warning: Unexpected proxy format: {proxy_url}")
+                return proxy_url
+        except Exception as e:
+            print(f"Error formatting proxy {proxy_url}: {str(e)}")
+            return proxy_url
 
     def login(self) -> Optional[Dict]:
         """Handle login process"""
         capsolver.api_key = self.config.api_key
         try:
+            print(f"Attempting to solve CAPTCHA with proxy: {self.formatted_proxy}")
             solution = capsolver.solve({
                 "type": "ReCaptchaV2Task",
                 "websiteURL": self.config.website_url,
                 "websiteKey": self.config.website_key,
-                "proxy": self.proxy
+                "proxy": self.formatted_proxy
             })
-
+            
+            if not solution:
+                print("CAPTCHA solution returned empty")
+                return None
+                
             if 'gRecaptchaResponse' not in solution:
-                print("CAPTCHA solution failed")
+                print(f"CAPTCHA solution failed: {solution}")
                 return None
 
+            print("CAPTCHA solved successfully, attempting login...")
             payload = {
                 "username": self.config.username,
                 "password": self.config.password,
@@ -140,22 +224,31 @@ class VisaApplication:
                 "language": "PT",
                 "captchaResponse": solution["gRecaptchaResponse"]
             }
+            print(self.session.cookies.get_dict())
             response = self.session.post(
-                "https://pedidodevistos.mne.gov.pt/$J@5Yg0RAhCxKgAhgfwtTouVMlnWPHDd_ubZzU6uSScB8ZmN3SlXxLKGpc",
+                "https://pedidodevistos.mne.gov.pt/VistosOnline/login",
                 data=payload
             )
             if response.status_code == 200:
                 response_json = response.json()
                 if response_json["type"] == 'error':
-                    print(f'Error: {response_json["description"]}')
+                    print(f'Login error: {response_json["description"]}')
                     return None
                 return self.session.cookies.get_dict()
 
-            print(f"Login failed: {response.status_code}")
+            print(f"Login failed with status code: {response.status_code}")
             return None
-
+            
+        except requests.exceptions.ProxyError as e:
+            print(f"Proxy connection error: {str(e)}")
+            print(f"Check if proxy is valid: {self.formatted_proxy}")
+            return None
+        except requests.exceptions.ConnectionError as e:
+            print(f"Connection error: {str(e)}")
+            return None
         except Exception as e:
             print(f"Login error: {str(e)}")
+            print(f"Error type: {type(e).__name__}")
             return None
 
     def submit_form(self) -> None:
@@ -166,9 +259,10 @@ class VisaApplication:
         stored_cookies = self.cookie_manager.get_cookies(self.config.username)
         if stored_cookies:
             cookies = stored_cookies['cookie']
+            formatted_stored_proxy = self._format_proxy(stored_cookies['proxy'])
             self.session.proxies.update({
-                "http": stored_cookies['proxy'],
-                'https': stored_cookies['proxy']
+                "http": formatted_stored_proxy,
+                'https': formatted_stored_proxy
             })
         else:
             cookies = self.login()
@@ -183,7 +277,8 @@ class VisaApplication:
             return
 
         try:
-            self.session.cookies.update(cookies)
+            # self.session.cookies.update(cookies)
+            
             response = self.session.post(
                 "https://pedidodevistos.mne.gov.pt/VistosOnline/Formulario",
                 data=self.form_data1,
@@ -199,6 +294,7 @@ class VisaApplication:
                         "https://pedidodevistos.mne.gov.pt/VistosOnline/Formulario",
                         data=self.form_data1
                     )
+                    self.session.cookies.update(new_cookies)
 
             with open('form1.html', 'w', encoding='utf-8') as f:
                 f.write(response.text)
@@ -249,7 +345,7 @@ class VisaApplication:
                 "__RequestVerificationToken": csrf_token,
                 "RGPDAccepted": "",
                 "posto_representacao": "null",
-                "f0sf1": "5088",
+                "f0sf1": "4082",
                 "f1": f1,
                 "f2": "Angela Sonia Ribeiro Furtado",
                 "f3": f3,
@@ -269,8 +365,8 @@ class VisaApplication:
                 "f5": "",
                 "f13": f13,
                 "f14": f14,
-                "f16": "2024/04/15",
-                "f17": "2029/04/14",
+                "f16": "2025/05/17",
+                "f17": "2025/06/06",
                 "f15": "CPV",
                 "f43": "",
                 "f43sf2": "",
@@ -297,8 +393,8 @@ class VisaApplication:
                 "f32": "PRT",
                 "f24": "1",
                 "f25": "15",
-                "f30": "2025/05/17",
-                "f31": "2025/06/06",
+                "f30": "2025/08/28",
+                "f31": "2025/09/09",
                 "cmbImpressoesDigitais": "N",
                 "dataImpressoesDigitais": "",
                 "numVinImpressoesDigitais": "",
@@ -356,6 +452,7 @@ class VisaApplication:
 
     def _handle_form_response(self, response: requests.Response) -> None:
         """Handle the response from the second form submission"""
+       
         if response.status_code == 200:
             error_td = BeautifulSoup(response.text, 'html.parser').find(
                 'td', class_='texto_erro')
@@ -365,16 +462,11 @@ class VisaApplication:
         elif response.status_code == 302:
             redirect_url = response.headers['Location']
             print(redirect_url)
-            stored_cookies = self.cookie_manager.get_cookies(
-                self.config.username)
-            if stored_cookies and 'cookie' in stored_cookies:
-                self.session.cookies.update(stored_cookies['cookie'])
             res = self.session.get(
-                f'https://pedidodevistos.mne.gov.pt/VistosOnline/{redirect_url}')
-            print(res.text)
-
-            # with open('test1.html', 'w', encoding='utf-8') as f:
-            #     f.write(res.text)
+                f'https://pedidodevistos.mne.gov.pt/VistosOnline/{redirect_url}', headers={'Referer': response.url})
+            with open('test1.html', 'w', encoding='utf-8') as f:
+                f.write(res.text)
+            # self.get_available_days(3018)
             # self.get_available_days(3018)
 
         else:

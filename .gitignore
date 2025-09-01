@@ -15,6 +15,8 @@ form1.html
 form2.html
 form3.html
 pdf.html
-
+test1.html
+credentials.txt
+downloaded.pdf
 # PyInstaller generated spec file  
 main.spec  
